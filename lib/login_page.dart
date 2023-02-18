@@ -16,7 +16,6 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
-  bool isLoading = false;
   bool isLogged = false;
   String email = '';
 
@@ -25,27 +24,12 @@ class _LoginPageState extends State<LoginPage> {
     super.initState();
   }
 
-  Future<Null> logout() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString('username', '');
-    prefs.setBool('isUserLogged', false);
-
-    setState(() {
-      email = '';
-      isLoggedIn = false;
-    });
-  }
-
   Future<Null> loginUser() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString('username', emailController.text);
-    prefs.setBool('isUserLogged', true);
+    prefs.setString('email', emailController.text);
 
     setState(() {
       email = emailController.text;
-      userId = email;
-      isLogged = true;
-      isLoggedIn = true;
     });
 
     emailController.clear();
@@ -58,6 +42,7 @@ class _LoginPageState extends State<LoginPage> {
       children: [
         Scaffold(
           appBar: AppBar(
+            backgroundColor: const Color.fromRGBO(11, 81, 187, 1),
             title: const Text('Documentale'),
           ),
           body: Padding(
@@ -78,35 +63,42 @@ class _LoginPageState extends State<LoginPage> {
                         return val.isNotEmpty;
                       },
                       hintText: "Email",
+                      labelText: "Email",
                     ),
                     SimpleTextField(
                       textEditingController: passwordController,
                       validator: (val) => val.isNotEmpty,
                       obscureText: true,
                       hintText: "Password",
+                      labelText: "Password",
                     ),
                     ElevatedButton(
                       onPressed: () {
-                        setState(() {
-                          isLoading = true;
-                        });
-                        Future.delayed(const Duration(seconds: 3));
                         loginUser();
 
-                        isLoading = false;
                         Navigator.of(context).pushReplacement(_createRoute());
                       },
-                      child: const Text('LOGIN'),
+                      style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.all(Colors.green),
+                        minimumSize:
+                            MaterialStateProperty.all(const Size(150, 45)),
+                        maximumSize:
+                            MaterialStateProperty.all(const Size(400, 50)),
+                        shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        )),
+                        textStyle: MaterialStateProperty.all(
+                          const TextStyle(fontSize: 18),
+                        ),
+                      ),
+                      child: const Text('Login'),
                     )
                   ],
                 ).toList(),
               ),
             ),
           ),
-        ),
-        Visibility(
-          visible: isLoading,
-          child: const LoadingSpinner(),
         ),
       ],
     );

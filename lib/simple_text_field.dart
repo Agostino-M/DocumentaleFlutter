@@ -8,6 +8,8 @@ class SimpleTextField extends StatefulWidget {
       this.textInputType,
       this.autoFocus = false,
       this.obscureText = false,
+      this.maxLines = 1,
+      this.minLines = 1,
       this.textInputAction,
       this.focusNode,
       this.prefixIconData,
@@ -20,7 +22,7 @@ class SimpleTextField extends StatefulWidget {
       this.fillColor,
       this.accentColor,
       this.textColor = Colors.black,
-      this.borderRadius = 6,
+      this.borderRadius = const BorderRadius.all(Radius.circular(6)),
       this.validator,
       this.showConfirmation = true,
       this.showError = true,
@@ -35,6 +37,8 @@ class SimpleTextField extends StatefulWidget {
   final TextInputType? textInputType;
   final bool autoFocus;
   final bool obscureText;
+  final int? maxLines;
+  final int? minLines;
   final TextInputAction? textInputAction;
   final FocusNode? focusNode;
   final IconData? prefixIconData;
@@ -49,7 +53,7 @@ class SimpleTextField extends StatefulWidget {
   final Color? fillColor;
   final Color? accentColor;
   final Color textColor;
-  final double borderRadius;
+  final BorderRadius borderRadius;
   final bool Function(String)? validator;
   final bool showConfirmation;
   final bool showError;
@@ -115,11 +119,11 @@ class _SimpleTextFieldState extends State<SimpleTextField> {
         if (hasConfirmation && widget.showConfirmation) {
           return OutlineInputBorder(
               borderSide: const BorderSide(color: Colors.green, width: 1.25),
-              borderRadius: BorderRadius.circular(widget.borderRadius));
+              borderRadius: widget.borderRadius);
         } else if (hasFocus && hasError) {
           return OutlineInputBorder(
             borderSide: const BorderSide(color: Colors.red, width: 1.25),
-            borderRadius: BorderRadius.circular(widget.borderRadius),
+            borderRadius: widget.borderRadius,
           );
         }
       }
@@ -127,7 +131,7 @@ class _SimpleTextFieldState extends State<SimpleTextField> {
         borderSide: BorderSide(
             color: widget.accentColor ?? currentTheme.primaryColor,
             width: 1.25),
-        borderRadius: BorderRadius.circular(widget.borderRadius),
+        borderRadius: widget.borderRadius,
       );
     }
 
@@ -136,17 +140,17 @@ class _SimpleTextFieldState extends State<SimpleTextField> {
         if (hasConfirmation) {
           return OutlineInputBorder(
             borderSide: const BorderSide(color: Colors.green),
-            borderRadius: BorderRadius.circular(widget.borderRadius),
+            borderRadius: widget.borderRadius,
           );
         } else if (hasError) {
           return OutlineInputBorder(
             borderSide: const BorderSide(color: Colors.red),
-            borderRadius: BorderRadius.circular(widget.borderRadius),
+            borderRadius: widget.borderRadius,
           );
         }
       }
       return OutlineInputBorder(
-        borderRadius: BorderRadius.circular(widget.borderRadius),
+        borderRadius: widget.borderRadius,
         borderSide: BorderSide(
           color: Colors.grey[400]!,
         ),
@@ -212,6 +216,8 @@ class _SimpleTextFieldState extends State<SimpleTextField> {
             style: TextStyle(color: widget.textColor),
             cursorColor: widget.textColor,
             obscureText: widget.obscureText,
+            maxLines: widget.maxLines,
+            minLines: widget.minLines,
             textInputAction: widget.textInputAction,
             decoration: InputDecoration(
               contentPadding: EdgeInsets.symmetric(
@@ -232,7 +238,8 @@ class _SimpleTextFieldState extends State<SimpleTextField> {
               focusedBorder: buildFocusedBorder(),
               enabledBorder: buildEnabledBorder(),
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(widget.borderRadius),
+                //borderRadius: widget.borderRadius,
+                borderRadius: widget.borderRadius,
               ),
               prefixIcon: widget.prefixIconData != null
                   ? Padding(
